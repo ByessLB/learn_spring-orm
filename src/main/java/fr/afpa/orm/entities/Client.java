@@ -16,7 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="client")
+@Table(name="owner")
 public class Client {
 
     /**
@@ -40,7 +40,7 @@ public class Client {
     /**
      * Adresse email (unique) du propriétaire
      */
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
     /**
      * Date d'anniversaire du prop
@@ -52,7 +52,7 @@ public class Client {
      * Association de type "OneToMany" : une personne peut avoir plusieurs comptes
      */
     @JsonIgnore
-    @OneToMany(targetEntity = Account.class, mappedBy = "owner")
+    @OneToMany(targetEntity = Account.class, mappedBy = "client")
     private List<Account> accounts;
 
     public Client() {
