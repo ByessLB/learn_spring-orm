@@ -85,8 +85,8 @@ public class AccountRestController {
      * Attention de bien ajouter les annotations qui conviennent
      */
     @PutMapping("/{id}")
-    public void upate(@PathVariable long id, @RequestBody AccountDTO account) {
-        accountService.updateAccount(id, account);
+    public ResponseEntity<?> upate(@PathVariable long id, @RequestBody AccountDTO account) {
+        return accountService.updateAccount(id, account);
     }
 
 

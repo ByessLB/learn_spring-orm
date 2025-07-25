@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fr.afpa.orm.dto.ClientDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="owner")
+@Table(name="client")
 public class Client {
 
     /**
@@ -57,6 +58,14 @@ public class Client {
 
     public Client() {
         // Constructeur vide.
+    }
+
+    public Client(ClientDTO clientDTO) {
+        this.id = clientDTO.getId();
+        this.firstName = clientDTO.getFirstName();
+        this.lastName = clientDTO.getLastName();
+        this.email = clientDTO.getEmail();
+        this.birthdate = clientDTO.getBirthDate();
     }
 
     public UUID getId() {

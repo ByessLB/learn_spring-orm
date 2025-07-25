@@ -2,7 +2,6 @@ package fr.afpa.orm.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import fr.afpa.orm.entities.Account;
 import fr.afpa.orm.entities.Client;
@@ -20,9 +19,9 @@ import fr.afpa.orm.entities.Client;
 public class AccountDTO {
 
     private Long id;
-    private LocalDateTime createionTime;
+    private LocalDateTime creationTime;
     private BigDecimal balance;
-    private Boolean valide;
+    private Boolean active;
     private ClientDTO client;
 
     public AccountDTO() {
@@ -30,9 +29,9 @@ public class AccountDTO {
 
     public AccountDTO(Account account) {
         this.id = account.getId();
-        this.createionTime = account.getCreationTime();
+        this.creationTime = account.getCreationTime();
         this.balance = account.getBalance();
-        this.valide = account.getValide();
+        this.active = account.getActive();
 
         Client clientEnity = account.getClient();
         client = new ClientDTO(clientEnity.getId(),
@@ -50,12 +49,12 @@ public class AccountDTO {
         this.id = id;
     }
 
-    public LocalDateTime getCreateionTime() {
-        return createionTime;
+    public LocalDateTime getCreationTime() {
+        return creationTime;
     }
 
-    public void setCreateionTime(LocalDateTime createionTime) {
-        this.createionTime = createionTime;
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 
     public BigDecimal getBalance() {
@@ -66,12 +65,12 @@ public class AccountDTO {
         this.balance = balance;
     }
 
-    public Boolean getValide() {
-        return valide;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setValide(Boolean valide) {
-        this.valide = valide;
+    public void setActive(Boolean valide) {
+        this.active = valide;
     }
 
     public ClientDTO getClient() {

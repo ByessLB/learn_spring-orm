@@ -1,8 +1,5 @@
 package fr.afpa.orm.services;
 
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,17 +49,20 @@ public class AccountService {
     private Account convertToAccount(AccountDTO accountDTO) {
 
         try {
-            UUID clientId = accountDTO.getClient().id();
+            UUID clientId = accountDTO.getClient().getId();
             Optional<Client> optionalClient = clientRepository.findById(clientId);
-            Account account;
 
-            if (optionalClient.isPresent()) {
-                account = new Account(
-                        accountDTO.getCreateionTime(),
-                        accountDTO.getBalance(),
-                        accountDTO.getValide(),
-                        optionalClient.get());
-            } else if (accountDTO.getId() != null) {
+            if (optionalClient.isEmpty()) {
+                return null;
+            }
+
+            Account account = new Account(
+                    accountDTO.getCreationTime(),
+                    accountDTO.getBalance(),
+                    accountDTO.getActive(),
+                    optionalClient.get());
+
+            if (accountDTO.getId() != null) {
                 account.setId(accountDTO.getId());
             }
             return account;
@@ -99,6 +99,7 @@ public class AccountService {
 
     /**
      * Retourne un compte avec son client à partir de son ID
+     * 
      * @param id
      * @return
      */
@@ -110,44 +111,52 @@ public class AccountService {
      * Creation d'un compte d'un client
      * 
      * @param accountDTO
-     * @return retour d'un ResponseEntity<AccountDTO> après convertion en AccountDTO du retour
-     * de la sauvegarde de l'entité qui, auparavant, provient d'un AccountDTO converti en
-     * entité
+     * @return retour d'un ResponseEntity<AccountDTO> après convertion en AccountDTO
+     *         du retour
+     *         de la sauvegarde de l'entité qui, auparavant, provient d'un
+     *         AccountDTO converti en
+     *         entité
      */
     public ResponseEntity<AccountDTO> createAccount(AccountDTO accountDTO) {
-        return new ResponseEntity<AccountDTO> (convertToDTO(
+        return new ResponseEntity<AccountDTO>(convertToDTO(
                 accountRepository.save(
-                    convertToAccount(accountDTO)
-                )
-            ), HttpStatus.CREATED);
+                        convertToAccount(accountDTO))),
+                HttpStatus.CREATED);
     }
 
     /**
      * Update Account
+     * 
      * @param id
      * @param accountDTO
      * 
-     * Vérifie que l'entité ayant l'Id entré en param1 est identique
-     * l'id de l'AccountDTO entré en param2.
-     * Plusieurs vérification effectué pour permettre de sauvegarder ou pas
-     * les éléments rentrés
-     * Plusieurs réponse de prévu selon l'accomplissement de la méthode
+     *                   Vérifie que l'entité ayant l'Id entré en param1 est
+     *                   identique
+     *                   l'id de l'AccountDTO entré en param2.
+     *                   Plusieurs vérification effectué pour permettre de
+     *                   sauvegarder ou pas
+     *                   les éléments rentrés
+     *                   Plusieurs réponse de prévu selon l'accomplissement de la
+     *                   méthode
      */
-    public void updateAccount(long id, AccountDTO accountDTO) {
-        Account orignalAccount = accountRepository.findById(id).orElse(null);
-        Account valueEntry = convertToAccount(accountDTO);
+    public ResponseEntity<AccountDTO> updateAccount(long id, AccountDTO accountDTO) {
+        Optional<Account> originalAccount = accountRepository.findById(id);
 
-        if (!orignalAccount.equals(valueEntry) && orignalAccount.getId().equals(valueEntry.getId())) {
-            new ResponseEntity<AccountDTO>(
-                convertToDTO(
-                    accountRepository.save(valueEntry)
-                ), HttpStatus.ACCEPTED
-            );
-        } else if (!orignalAccount.equals(valueEntry)) {
-            new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } else {
-            new ResponseEntity<>(null, HttpStatus.CONTINUE);
+        if (originalAccount.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+
+        if (id != accountDTO.getId()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        Account account = originalAccount.get();
+        account.setBalance(accountDTO.getBalance());
+        account.setActive(accountDTO.getActive());
+        accountRepository.save(account);
+
+        return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
+
     }
 
     public void removeAccout(long id, HttpServletResponse response) {
