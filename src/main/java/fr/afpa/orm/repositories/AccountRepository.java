@@ -4,8 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import fr.afpa.orm.entities.Account;
+
 import java.util.Optional;
+import java.util.UUID;
 import java.time.LocalDateTime;
+import java.util.List;
+
 
 
 /**
@@ -17,4 +21,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 
     Optional<Account> findByCreationTime(LocalDateTime creationTime);
+
+    List<Account> findByClientId(UUID id);
 }

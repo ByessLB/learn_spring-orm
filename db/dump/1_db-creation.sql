@@ -20,3 +20,15 @@ CREATE TABLE account (
 	client_id UUID,
 	FOREIGN KEY (client_id) REFERENCES client(id)
 );
+
+CREATE TABLE Insurance(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50)  NOT NULL
+);
+
+CREATE TABLE subsribes(
+    id_client UUID PRIMARY KEY,
+    id_insurance PRIMARY KEY,
+    FOREIGN KEY(id_client) REFERENCES Client(id),
+    FOREIGN KEY(id_insurance) REFERENCES Insurance(id)
+);

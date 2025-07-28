@@ -1,6 +1,7 @@
 package fr.afpa.orm.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -55,6 +59,15 @@ public class Client {
     @JsonIgnore
     @OneToMany(targetEntity = Account.class, mappedBy = "client")
     private List<Account> accounts;
+
+    /**
+     * Association de type "ManyToMany" : une personne peut avoir plusieurs inscriptions
+     */
+    @ManyToMany
+    @JoinTable(name = "Subscribes",
+                joinColumns = @JoinColumn(name = "client_id"),
+                inverseJoinColumns = @JoinColumn(name = "insurance_id"))
+    private List<Insurance> insurances = new ArrayList<>();
 
     public Client() {
         // Constructeur vide.
@@ -115,4 +128,13 @@ public class Client {
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
     }
+
+    public List<Insurance> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<Insurance> insurances) {
+        this.insurances = insurances;
+    }
+
 }

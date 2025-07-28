@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,16 +14,20 @@ import fr.afpa.orm.entities.Account;
 import fr.afpa.orm.entities.Client;
 import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+
+    private AccountService(AccountRepository accountRepository, ClientRepository clientRepository) {
+        this.accountRepository = accountRepository;
+        this.clientRepository = clientRepository;
+    }
 
     /**
      * Constructeur souhaité dans le controller
@@ -98,13 +101,33 @@ public class AccountService {
     }
 
     /**
-     * Retourne un compte avec son client à partir de son ID
+     * GetAccountById
      * 
      * @param id
      * @return
+     * 
+     * Renvoie un compte avec le client lié selon l'ID du compte
      */
     public AccountDTO getAccountById(Long id) {
         return convertToDTO(accountRepository.findById(id).orElse(null));
+    }
+
+    /**
+     * GetAccountsByIdClient(UUID clientId)
+     * @param id
+     * @return
+     *  Renvoie tous les comptes d'un client selon son ID
+     */
+    public List<AccountDTO> getAccountsByIdClient(UUID id) {
+        List<Account> accounts = accountRepository.findByClientId(id);
+
+        if (accounts.isEmpty()) {
+            throw new EntityNotFoundException("Accounts of client not found");
+        }
+
+        return accounts.stream()
+                        .map(this::convertToDTO)
+                        .collect(Collectors.toList());
     }
 
     /**
