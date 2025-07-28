@@ -1,5 +1,6 @@
 package fr.afpa.orm.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import fr.afpa.orm.dto.ClientDTO;
 import fr.afpa.orm.entities.Client;
-import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -154,5 +154,29 @@ public class ClientService {
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+
+/**
+ * getAllClientsByInsuranceId
+ * @param id
+ * @return
+ * 
+ * renvoie la liste (en DTO) des clients à paritr de l'ID de l'assurance
+ */
+    public List<ClientDTO> getAllClientsByInsuranceId(Long id) {
+        List<Client> clients = clientRepository.findAllByInsuranceId(id);
+
+        if (clients.isEmpty()) {
+            throw new EntityNotFoundException("Clients list by Insurance not found");
+        }
+
+        List<ClientDTO> clientsDTO = new ArrayList<>();
+
+        for (Client client : clients) {
+            clientsDTO.add(convertToDTO(client));
+        }
+
+        return clientsDTO;
     }
 }

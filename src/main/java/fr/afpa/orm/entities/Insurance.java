@@ -3,7 +3,7 @@ package fr.afpa.orm.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import fr.afpa.orm.dto.InsuranceDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +32,11 @@ public class Insurance {
     private List<Client> clients = new ArrayList<>();
 
     public Insurance() {
+    }
+
+    public Insurance(InsuranceDTO insuranceDTO) {
+        this.id = insuranceDTO.getId();
+        this.name = insuranceDTO.getName();
     }
 
     public Long getId() {

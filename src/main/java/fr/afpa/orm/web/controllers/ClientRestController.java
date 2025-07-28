@@ -4,15 +4,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.afpa.orm.dto.AccountDTO;
 import fr.afpa.orm.dto.ClientDTO;
+import fr.afpa.orm.dto.InsuranceDTO;
 import fr.afpa.orm.services.AccountService;
 import fr.afpa.orm.services.ClientService;
+import fr.afpa.orm.services.InsuranceService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,14 +34,17 @@ public class ClientRestController {
     
     private final AccountService accountService;
 
-    ClientRestController(ClientService clientService, AccountService accountService) {
+    private final InsuranceService insuranceService;
+
+    ClientRestController(ClientService clientService, AccountService accountService, InsuranceService insuranceService) {
         this.clientService = clientService;
         this.accountService = accountService;
+        this.insuranceService = insuranceService;
     }
 
     @GetMapping
-    public List<ClientDTO> getAll() {
-        return clientService.getAllClient();
+    public ResponseEntity<List<ClientDTO>> getAll() {
+        return new ResponseEntity<>(clientService.getAllClient(), HttpStatus.OK) ;
     }
 
     @GetMapping("/{id}")
@@ -58,6 +62,15 @@ public class ClientRestController {
         }
     }
 
+    @GetMapping("/{id}/insurances")
+    public ResponseEntity<List<InsuranceDTO>> getInsurancesByClient(@PathVariable UUID id) {
+        try {
+            return new ResponseEntity<>(insuranceService.getInsurancesByClientId(id), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<ClientDTO> create(@RequestBody ClientDTO client) {
         return new ResponseEntity<ClientDTO>(clientService.createClient(client), HttpStatus.CREATED);
@@ -66,8 +79,7 @@ public class ClientRestController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable UUID id, @RequestBody ClientDTO client) {
         try {
-            ClientDTO updated = clientService.updateClient(id, client);
-            return new ResponseEntity<ClientDTO>(updated, HttpStatus.ACCEPTED);
+            return new ResponseEntity<ClientDTO>(clientService.updateClient(id, client), HttpStatus.ACCEPTED);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
