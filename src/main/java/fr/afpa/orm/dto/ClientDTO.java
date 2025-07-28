@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import fr.afpa.orm.entities.Client;
 
-
 public class ClientDTO {
     private UUID id;
     private String firstName;

@@ -17,9 +17,31 @@ import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * TODO on partira du principe qu'en raison du principe de responsabilité unique le service ne devra pas nécessairement traiter les résponse HTTP
+ * C'est une responsabilité que l'on fera porté au contrôleur
+ * 
+ * Dans les grande lignes :
+ * le service contiendra le code métier (ici uniquement l'appel au repository)
+ * Tout ce qui touche au protocol HTTP pourra être mis dans le contrôleur/
+ * 
+ * Par exemple "ResponseEntity<ClientDTO> getOneClient(UUID id)"
+ * pourrais devenir "ClientDTO getOneClient(UUID id)"
+ * 
+ * Et ça sera au contrôleur de créer un ResponseEntity
+ * 
+ * Que est l'intérêt ?
+ * -> permet de limiter le couplage entre le service (logique métier) et le protocol HTTP
+ * --> le service devient réutilisable même dans un projet qui n'est pas une Web API
+ * --> si la bibliothèque HTTP change (en raison d'une mise à jour, par exemple), il n'est pas nécessaire de changer les services
+ */
 @Service
 public class ClientService {
 
+    /**
+     * TODO est-il possible de faire l'injection de dépendance via le constructeur ?
+     * Plus d'informations ici : https://keyboardplaying.fr/blogue/2021/01/spring-injection-constructeur/
+     */
     @Autowired
     ClientRepository clientRepository;
 
@@ -65,6 +87,7 @@ public class ClientService {
     }
 
     /**
+     * 
      * Create Client
      * @param clientDTO
      * @return
