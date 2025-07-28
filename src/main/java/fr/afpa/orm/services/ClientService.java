@@ -1,6 +1,5 @@
 package fr.afpa.orm.services;
 
-import java.lang.foreign.Linker.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,6 +46,7 @@ public class ClientService {
     /**
      * Return All Clients
      * @return
+     * tout les clients
      */
     public List<ClientDTO> getAllClient() {
         return clientRepository.findAll()
@@ -56,7 +56,7 @@ public class ClientService {
     }
 
     /**
-     * Return on Client by ID
+     * Return one Client by ID
      * @param id
      * @return
      */
@@ -109,6 +109,12 @@ public class ClientService {
         return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Delete client
+     *
+     * @param id
+     * @param response
+     */
     public void removeClient(UUID id, HttpServletResponse response) {
         if (clientRepository.existsById(id)) {
             clientRepository.deleteById(id);

@@ -159,6 +159,15 @@ public class AccountService {
 
     }
 
+    /**
+     * Delete account
+     *
+     * @param id
+     * @param response
+     * 
+     * Vérification de l'existance du compte avec l'id
+     * suppression du compte
+     */
     public void removeAccout(long id, HttpServletResponse response) {
         if (accountRepository.existsById(id)) {
             accountRepository.deleteById(id);

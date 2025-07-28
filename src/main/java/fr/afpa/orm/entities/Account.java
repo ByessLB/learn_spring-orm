@@ -3,7 +3,8 @@ package fr.afpa.orm.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 /**
@@ -49,6 +49,7 @@ public class Account {
      * https://koor.fr/Java/TutorialJEE/jee_jpa_many_to_one.wp
      */
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
