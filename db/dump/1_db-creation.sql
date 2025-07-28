@@ -21,7 +21,7 @@ CREATE TABLE account (
 	FOREIGN KEY (client_id) REFERENCES client(id)
 );
 
-CREATE TABLE Insurance(
+CREATE TABLE insurance(
     id SERIAL PRIMARY KEY,
     name VARCHAR(50)  NOT NULL
 );
